@@ -11,4 +11,6 @@ module.exports = function routes() {
     this.match('login.:format?', 'account#login', { via: 'post'});
     this.match('logout', 'account#logout');
   });
+  this.match('api/feed', 'api#feed');
+  this.match('api/download', 'api#download');
 }
