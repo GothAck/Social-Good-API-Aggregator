@@ -18,6 +18,7 @@
     "nodemailer": "",
     "dateformat": "",
     "elementtree": "",
-    "sax": ""
+    "sax": "",
+    "jquery": ""
   }
 }
