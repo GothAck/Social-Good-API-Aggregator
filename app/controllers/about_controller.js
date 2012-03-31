@@ -7,7 +7,8 @@ var pages = {
   contact: 'Contact',
   charity: 'Charity',
   agency: 'Agency',
-  apps: 'Apps'
+  apps: 'Apps',
+  contact: 'Contact us'
 }
 
 AboutController.index = function() {
