@@ -1,0 +1,7 @@
+<% this.about_bar_class = function (action) { if ((page || route.action) === action) { %>class="active"<% }} %>
+<ul class="nav nav-pills">
+  <li <% this.about_bar_class('index') %>><a href="/about">VolunteerFeed</a></li>
+  <li <% this.about_bar_class('charity') %>><a href="/about/charity">Charities</a></li>
+  <li <% this.about_bar_class('agency') %>><a href="/about/agency">Agencies</a></li>
+  <li <% this.about_bar_class('apps') %>><a href="/about/apps">Apps</a></li>
+</ul>
