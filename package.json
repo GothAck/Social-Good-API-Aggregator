@@ -20,6 +20,7 @@
     "elementtree": "",
     "sax": "",
     "jquery": "",
-    "date": ""
+    "date": "",
+    "redis": ""
   }
 }

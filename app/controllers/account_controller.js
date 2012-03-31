@@ -24,6 +24,7 @@ AccountController.new = function () {
   this.render();
 }
 AccountController.before('new', filters.notAuth);
+AccountController.before('new', filters.signupToken);
 AccountController.before('new', filters.convertModelForm);
 
 /*
@@ -64,6 +65,7 @@ AccountController.create = function() {
   });
 };
 AccountController.before('create', filters.notAuth);
+AccountController.before('create', filters.signupTokenRemove);
 AccountController.before('create', filters.convertModelForm);
 
 /*
