@@ -3,7 +3,8 @@ var Schema = mongoose.Schema;
 var Email = mongoose.SchemaTypes.Email;
 
 var bcrypt = require('bcrypt')
-  , crypto = require('crypto');
+  , crypto = require('crypto')
+  , date = require('date');
 
 var AccountSchema = new Schema({
   // eMail address
@@ -28,7 +29,9 @@ var AccountSchema = new Schema({
       new: {},
       edit: {}
     } }
-  }
+  },
+
+  api_key: { type: String }
 });
 
 AccountSchema.virtual('password', {forms_type: 'password', forms_required: true, forms_confirm: true, forms: {
@@ -53,6 +56,21 @@ AccountSchema.virtual('password', {forms_type: 'password', forms_required: true,
 
 AccountSchema.method('checkPassword', function (password, callback) {
   bcrypt.compare(password, this.hash, callback);
+});
+
+AccountSchema.method('checkToken', function (nonce, created, digest, callback) {
+  if (! this.api_key)
+    return callback('No API key on account, please contact us!');
+  created = Date.ISO(created);
+  if (!created)
+    return callback('Invalid date');
+  if ( ( ((new Date()) - created) / 1000/60) > 5)
+    return callback('Digest too old');
+  var shasum = crypto.createHash('sha256');
+  shasum.update(nonce + created.toISOString() + this.api_key);
+  if (digest !== shasum.digest('base64'))
+    return callback('Invalid digest');
+  callback(null, true);
 });
 
 AccountSchema.virtual('confirmation_hash').get(function () {
@@ -82,6 +100,24 @@ AccountSchema.static('authenticate', function (email, password, callback) {
       if (!passwordCorrect)
         return callback(null, false);
 
+      return callback(null, user);
+    });
+  });
+});
+
+AccountSchema.static('authenticateToken', function(email, nonce, created, digest, callback) {
+  this.findOne({ email: email}, function(err, user) {
+    if (err)
+      return callback(err);
+    if (!user)
+      return callback(null, false);
+    if (!user.confirmed)
+      return callback(null, false);
+    user.checkToken(nonce, created, digest, function (err, authed) {
+      if (err)
+        return callback(err);
+      if (!authed)
+        return callback(null, false);
       return callback(null, user);
     });
   });
